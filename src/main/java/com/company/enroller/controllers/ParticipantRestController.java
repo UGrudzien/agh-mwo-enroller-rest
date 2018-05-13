@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ public class ParticipantRestController {
 	@Autowired
 	ParticipantService participantService;
 
-	@RequestMapping(value = "", method = RequestMethod.GET)
+	@RequestMapping(value = "", method = RequestMethod.GET)//dlaczego tu nie może być participant?
 	public ResponseEntity<?> getParticipants() {
 		Collection<Participant> participants = participantService.getAll();
 		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
@@ -33,5 +34,30 @@ public class ParticipantRestController {
 	     }
 	     return new ResponseEntity<Participant>(participant, HttpStatus.OK);
 	 }
+	 @RequestMapping(value = "", method = RequestMethod.POST)
+	 public ResponseEntity<?> registerParticipant(@RequestBody Participant participant){
+		 //sprawdzić czy nie istnieje
+		 if ((participantService.findByLogin(participant.getLogin())!=null)){
+			 return new ResponseEntity("Prticipant with login: "+ participant.getLogin(),
+					 HttpStatus.CONFLICT);
+		 }
+
+		 // dodać/
+		 participantService.addParticipant(participant);
+		 //zwrócić
+		 return new ResponseEntity<Participant>(participant,HttpStatus.OK);
+		
+		
+	 }
+
+	 @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+		public ResponseEntity<?> deleteParticipant(@PathVariable("id") String login) {
+		     Participant participant = participantService.findByLogin(login);
+		     if (participant == null) {
+		         return new ResponseEntity(HttpStatus.NOT_FOUND);
+		     }
+		     participantService.deleteParticipant(participant);
+		     return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+		 }
 
 }
