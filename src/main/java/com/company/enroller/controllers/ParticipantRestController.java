@@ -59,5 +59,17 @@ public class ParticipantRestController {
 		     participantService.deleteParticipant(participant);
 		     return new ResponseEntity<Participant>(participant, HttpStatus.OK);
 		 }
+	 
+	 
+	 @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+		public ResponseEntity<?> updateParticipant(@PathVariable("id") String login, @RequestBody Participant updateParticipant) {
+		     Participant participant = participantService.findByLogin(login);
+		     if (participant == null) {
+		         return new ResponseEntity(HttpStatus.NOT_FOUND);
+		     }
+		     participant.setPassword(updateParticipant.getPassword());
+		     participantService.update(participant);
+		     return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+		 }
 
 }
