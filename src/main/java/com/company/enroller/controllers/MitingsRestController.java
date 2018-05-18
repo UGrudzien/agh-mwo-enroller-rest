@@ -23,8 +23,8 @@ public class MitingsRestController {
 	@Autowired
 	MeetingService meetingService;
 
-	@RequestMapping(value = "", method = RequestMethod.GET)//dlaczego tu nie może być participant?
-	public ResponseEntity<?> getParticipants() {
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public ResponseEntity<?> getMeetings() {
 		Collection<Meeting> meetings = meetingService.getAll();
 		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 	}
